@@ -1,0 +1,245 @@
+﻿@model IEnumerable<MVC_Projec2.Models.Booking>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="bookings-container">
+    <div class="bookings-header">
+        <h2>My Bookings</h2>
+        <a asp-action="Create" class="btn btn-new-booking">
+            <i class="fas fa-plus"></i> New Booking
+        </a>
+    </div>
+
+    <div class="bookings-table-container">
+        <table class="bookings-table">
+            <thead>
+                <tr>
+                    <th>Hall</th>
+                    <th>Session</th>
+                    <th>Atelier</th>
+                    <th>MakeUp</th>
+                    <th>Decor</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Hall?.Name</td>
+                        <td>@item.Session?.Name</td>
+                        <td>@item.Atelier?.Name</td>
+                        <td>@item.MakeUp?.Name</td>
+                        <td>@item.Decor?.Style</td>
+                        <td>@item.Created_at.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <span class="status-badge @(item.Status?.ToLower() == "pending" ? "pending" : "confirmed")">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td class="actions">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn-action view" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action edit" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action delete" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .bookings-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+        margin-top: 6rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .bookings-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+        .bookings-header h2 {
+            color: #333;
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+    .btn-new-booking {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: none;
+        font-weight: 500;
+    }
+
+        .btn-new-booking:hover {
+            background-color: #3e8e41;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+    .bookings-table-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        padding: 1px;
+        overflow: hidden;
+    }
+
+    .bookings-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .bookings-table th {
+            background-color: #f5f7fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            border-right: 1px solid #e0e0e0;
+        }
+
+            .bookings-table th:last-child {
+                border-right: none;
+            }
+
+        .bookings-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            border-right: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+
+            .bookings-table td:last-child {
+                border-right: none;
+            }
+
+        .bookings-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bookings-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        min-width: 80px;
+        text-align: center;
+    }
+
+        .status-badge.pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .status-badge.confirmed {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        
+
+    .actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-action.view {
+            background-color: #17a2b8;
+        }
+
+        .btn-action.edit {
+            background-color: #007bff;
+        }
+
+        .btn-action.delete {
+            background-color: #dc3545;
+        }
+
+    @@media (max-width: 768px) {
+        .bookings-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .bookings-table th,
+        .bookings-table td {
+            padding: 10px 8px;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            min-width: auto;
+            padding: 4px 8px;
+        }
+
+        .actions {
+            gap: 6px;
+        }
+
+        .btn-action {
+            width: 30px;
+            height: 30px;
+            font-size: 0.8rem;
+        }
+    }
+</style>

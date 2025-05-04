@@ -1,0 +1,190 @@
+﻿@model MVC_Projec2.ViewModels.DecorCommentViewModel
+
+@{
+    ViewData["Title"] = "DecorDetails";
+}
+
+<link rel="stylesheet" href="/css/DetailsStyle.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+<div class="container-fluid justify-content-center">
+    <div class="row text-center justify-content-center">
+        <h1 id="info" class="mb-3">Details Page</h1>
+        <div class="col-lg-7 col-md-6 col-sm-12 row m-2" id="div1">
+            <div class="carousel slide row text-center justify-content-center"
+            id="carouselDemo"
+            data-bs-wrap="true"
+            data-bs-ride="carousel" id="div1">
+                <div class="carousel-inner" id="div1">
+
+                    @for (int i = 0; i < Model.Decor.Images.Count; i++)
+                    {
+                        var isActive = i == 0 ? "active" : "";
+                        <div class="carousel-item @isActive" id="div1">
+                            @*                             <p>@Model.Decor.Images[i].ImageUrl</p>
+ *@                            <img src="~/images/@Model.Decor.Images[i].ImageUrl" id="cr" />
+                        </div>
+                    }
+
+                </div>
+
+                <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#carouselDemo"
+                data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+
+                <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#carouselDemo"
+                data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+
+                <div class="carousel-indicators w-50 position-relative">
+                    @for (int i = 0; i < Model.Decor.Images.Count; i++)
+                    {
+                        var isActive = i == 0 ? "active" : "";
+                        <button type="button"
+                        class="@isActive"
+                        data-bs-target="#carouselDemo"
+                        data-bs-slide-to="@i">
+                            <img src="/images/@Model.Decor.Images[i].ImageUrl" id="cr" />
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 m-2 justify-content-center row" id="details">
+            <div id="infoDiv" class="align-items-center justify-content-start row">
+                <h2>@Model.Decor.Style</h2>
+                <div id="text"><strong>Price :@Model.Decor.Price</strong></div>
+                <div id="text"><strong>Description : @Model.Decor.Description</strong></div>
+                <form asp-controller="Booking" asp-action="Create" method="post">
+                    <button id="btn" class="btn">Book Now</button>
+                </form>
+            </div>
+            <form asp-controller="Decor" asp-action="GetAll" method="post">
+                <button id="btn" class="btn mt-5 w-75">Back to All Decors</button>
+            </form>
+        </div>
+
+    </div>
+  
+    <div class="row justify-content-center">
+        <div id="comments">
+            <h3>Comments</h3>
+            <hr>
+            <div id="allComments" class="container">
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="row justify-content-center mb-2">
+                        <div class="col-md-7 col-sm-10">
+                            <div class="border rounded p-2 bg-light">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="fw-bold text-dark">
+                                        <i class="bi bi-person-circle me-1"></i>
+                                        @(comment.User != null ? comment.User.FullName : "Unknown User")
+                                    </small>
+                                    <small class="text-muted">@comment.CreatedAt.ToString("dd MMM yyyy hh:mm tt")</small>
+                                </div>
+                                <div class="ps-3">
+                                    <p class="mb-1 text-secondary" style="font-size: 0.95rem;">@comment.Content</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div id="comments2" class="mt-5">
+            <h3>Leave a Comment</h3>
+            <hr>
+            <form id="NewComment">
+                <div class="mb-3">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-control" rows="4" id="commentText" required placeholder="Write your Comment here"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="btn">Send Comment</button>
+            </form>
+        </div>
+    </div>
+
+    <input type="hidden" id="decorId" value="@Model.Decor.Id" />
+    <input type="hidden" id="userName" value="@User.Identity.Name" />
+    <input type="hidden" id="serviceType" value="Decor" />
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+
+        const connection = new signalR.HubConnectionBuilder()
+                        .withUrl("/commentHub")
+                        .configureLogging(signalR.LogLevel.Information)
+                        .build();
+
+         connection.on("Pong", () => {
+            console.log("Received pong!");
+        });
+
+         connection.start()
+            .then(() => {
+                console.log("Connected!");
+                connection.invoke("Ping"); // test method
+            })
+            .catch(err => console.error("Connection error:", err));
+               
+
+        connection.on("NewCommentNotify", function (userName, message, serviceId, serviceType) {
+            const currentServiceId = document.getElementById("decorId").value;
+            const currentServiceType = document.getElementById("serviceType").value;
+
+            if (serviceId == currentServiceId && serviceType == currentServiceType) {
+               
+                const newCommentHtml = `
+                    <div class="row justify-content-center mb-2">
+                        <div class="col-md-7 col-sm-10">
+                            <div class="border rounded p-2 bg-light">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="fw-bold text-dark">
+                                        <i class="bi bi-person-circle me-1"></i>
+                                        ${userName}
+                                    </small>
+                                    <small class="text-muted">Just now</small>
+                                </div>
+                                <div class="ps-3">
+                                    <p class="mb-1 text-secondary" style="font-size: 0.95rem;">${message}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+                document.getElementById("allComments").insertAdjacentHTML("beforeend", newCommentHtml);
+                document.getElementById("comments").scrollTop = document.getElementById("comments").scrollHeight;
+            } else {
+                console.log("NewComment Notify Failed.");
+            }
+        });
+
+        
+
+        document.getElementById("NewComment").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const userName = document.getElementById("userName").value;
+            const message = document.getElementById("commentText").value;
+            const serviceId = document.getElementById("decorId").value;
+            const serviceType = document.getElementById("serviceType").value;
+
+            if (!message.trim()) return;
+
+            connection.invoke("NewCommentArrived", userName, message, parseInt(serviceId), serviceType)
+                .catch(err => console.error(err.toString()));
+
+            document.getElementById("commentText").value = '';
+        });
+    </script>
+

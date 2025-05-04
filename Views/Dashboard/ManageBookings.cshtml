@@ -1,0 +1,146 @@
+﻿@model List<BookingViewModel>
+
+@{
+    Layout = "_DashboardLayout";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mt-4">Booking Management</h1>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info">@TempData["Message"]</div>
+    }
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">All Bookings</h6>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">All Bookings</a>
+                    <a class="dropdown-item" href="#">Pending</a>
+                    <a class="dropdown-item" href="#">Confirmed</a>
+                    <a class="dropdown-item" href="#">Cancelled</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                           
+                            <th>User</th>
+                            <th>Hall</th>
+                            <th>Session</th>
+                            <th>Decor</th>
+                            <th>Makeup</th>
+                            <th>Atiler</th>
+                           
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            <tr>
+                               
+                                <td>@booking.UserName</td>
+                                <td>@booking.HallName</td>
+                                <td>@booking.SessionType</td>
+                                <td>@booking.DecorStyle</td>
+                                <td>@booking.MakeupService</td>
+                                <td>@booking.AtelierName</td>
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(booking.Status)">
+                                        @booking.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (booking.Status == "Pending")
+                                    {
+                                        <div class="btn-group" role="group">
+                                            <form asp-action="UpdateBookingStatus" method="post">
+                                                <input type="hidden" name="id" value="@booking.Id" />
+                                                <input type="hidden" name="status" value="Confirmed" />
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-check"></i> Confirm
+                                                </button>
+                                            </form>
+                                            <form asp-action="UpdateBookingStatus" method="post">
+                                                <input type="hidden" name="id" value="@booking.Id" />
+                                                <input type="hidden" name="status" value="Cancelled" />
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="btn-group" role="group">
+                                            <a asp-controller="Booking" asp-action="Details" asp-route-id="@booking.Id"
+                                               class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-info-circle"></i> Details
+                                            </a>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Confirmed" => "badge-success",
+            "Pending" => "badge-warning",
+            "Cancelled" => "badge-danger",
+            _ => "badge-secondary"
+        };
+    }
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        .badge {
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 600;
+            border-radius: 0.25rem;
+        }
+        .badge-success { background-color: #1cc88a; }
+        .badge-warning { background-color: #f6c23e; }
+        .badge-danger { background-color: #e74a3b; }
+        .badge-secondary { background-color: #858796; }
+        .btn-group .btn { margin-right: 5px; }
+        .table td { vertical-align: middle; }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable({
+                responsive: true,
+                order: [[0, 'desc']], 
+                pageLength: 10
+            });
+        });
+    </script>
+}

@@ -1,0 +1,164 @@
+﻿@model DashboardViewModel
+
+<title>Dashboard Page</title>
+@{
+    Layout = "_DashboardLayout";
+}
+
+<div class="row">
+    
+    <div class="col-md-3 mb-3">
+        <div class="card h-100 text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-user-friends"></i> Users</h5>
+                <p class="card-text display-5">@Model.TotalUsers</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card h-100 text-white" style="background: linear-gradient(135deg, #ff7e5f, #feb47b);">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-calendar-alt"></i> Bookings</h5>
+                <p class="card-text display-5">@Model.TotalBookings</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card h-100 text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-church"></i> Halls</h5>
+                <p class="card-text display-5">@Model.TotalHalls</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card h-100 text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-camera-retro"></i> Sessions</h5>
+                <p class="card-text display-5">@Model.TotalSessions</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card h-100 text-white" style="background: linear-gradient(135deg, #6a11cb, #2575fc);">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-air-freshener"></i> Makeup Services</h5>
+                <p class="card-text display-5">@Model.TotalMakeUpServices</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card h-100 text-white" style="background: linear-gradient(135deg, #6a65cf, #2575fc);">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-female"></i> Ateliers</h5>
+                <p class="card-text display-5">@Model.TotalAteliers</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card h-100 text-white" style="background: linear-gradient(135deg, #010, #1FFf);">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-gem"></i> Decores</h5>
+                <p class="card-text display-5">@Model.TotalDecores</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">Doughnut Chart</div>
+            <div class="card-body">
+                <canvas id="doughnutChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">Bar Chart</div>
+            <div class="card-body">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
+        var doughnutChart = new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Users', 'Bookings', 'Halls', 'Sessions', 'Makeup', 'Ateliers', 'Decores'],
+                datasets: [{
+                    label: 'Statistics',
+                    data: [
+        @Model.TotalUsers,
+        @Model.TotalBookings,
+        @Model.TotalHalls,
+        @Model.TotalSessions,
+        @Model.TotalMakeUpServices,
+        @Model.TotalAteliers,
+        @Model.TotalDecores
+                    ],
+                    backgroundColor: ['#007bff', '#ff7e5f', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#098880'],
+                    borderColor: ['#0056b3', '#e35d3d', '#1e7e34', '#d39e00', '#bd2130', '#4e2780', '#063b8c'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                        }
+                    }
+                }
+            }
+        });
+
+        var ctxBar = document.getElementById('barChart').getContext('2d');
+        var barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Users', 'Bookings', 'Halls', 'Sessions', 'Makeup', 'Ateliers', 'Decores'],
+                datasets: [{
+                    label: 'Count',
+                    data: [
+        @Model.TotalUsers,
+        @Model.TotalBookings,
+        @Model.TotalHalls,
+        @Model.TotalSessions,
+        @Model.TotalMakeUpServices,
+        @Model.TotalAteliers,
+        @Model.TotalDecores
+                    ],
+                    backgroundColor: ['#007bff', '#ff7e5f', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#098880']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+
+

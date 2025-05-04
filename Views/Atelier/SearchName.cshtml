@@ -1,0 +1,64 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<Atelier>
+@{
+    ViewData["Title"] = "SearchHall";
+}
+
+<link rel="stylesheet" href="/css/DetailsStyle.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/hallStyle.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+<div class="container-fluid">
+    <div class="row text-center justify-content-center">
+        <h1 class="mt-5 mb-5">Search Results for Atelier</h1>
+
+        <!-- Search -->
+
+        <div class="search-container">
+            <form asp-controller="Atelier" asp-action="Search" method="get" class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" name="searchValue" placeholder="Search by atelier name..." />
+            </form>
+        </div>
+
+        <!-- Error -->
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert-error">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+
+        @foreach (Atelier atelier in Model)
+        {
+            <div class="col-lg-3 col-md-5 col-sm-12 mt-3 me-3">
+                <div id="hallCard">
+                    <img src="/images/@atelier.ImageUrl" alt="" class="mt-1">
+                    <p class="m-2">@atelier.Name</p>
+                    <hr class="m-2">
+                    <strong class="m-2">View / request price</strong>
+                    <a asp-controller="Atlier" asp-action="Detail" asp-route-id="@atelier.Id"><i class="fa-solid fa-circle-arrow-right" style="font-size: 20px;"></i></a>
+                    @*                     <a href="/Hall/HallDetailes/@hall.Id"><i class="fa-solid fa-circle-arrow-right" style="font-size: 20px;"></i></a>
+ *@                </div>
+            </div>
+        }
+
+    </div>
+
+    <div class="row text-center justify-content-center">
+        <form asp-controller="Atelier" asp-action="GetAll" method="post">
+            <button id="btn" class="btn mt-5 w-25">Back to All Atlier</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+
+

@@ -1,0 +1,63 @@
+﻿@model MVC_Projec2.ViewModels.EditDecorViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<link rel="stylesheet" href="/css/EditStyle.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+<div class="container-fluid text-center justify-content-center">
+    <h1 class="mt-3 mb-3">Edit Page</h1>
+    <div class="row text-center justify-content-center">
+        @for(int i =0; i< Model.Images.Count; i++)
+        {
+            <div class="col-lg-3 col-md-3 col-sm-5  mb-2">
+                <div id="image">
+                    <img src="/images/@Model.Images[i].ImageUrl" alt="">
+                </div>
+            </div>
+        }
+        </div>
+    </div>
+<div class="row text-center justify-content-center mt-5" id="info">
+        <h2>Decor Info</h2>
+    </div>
+    <div class="row text-center justify-content-center mt-3 mb-5">
+        <div id="formDiv" class="row text-center justify-content-center mt-3">
+            <form method="post" asp-action="SaveEdit" asp-controller="Decor" asp-route-id="@Model.Id">
+                <div class="mb-3 mt-5">
+                    <label asp-for="Style" class="form-label"></label>
+                    <input asp-for="Style" class="form-control" />
+                    <span asp-validation-for="Style" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+            <div class="mb-3 visually-hidden">
+                <label asp-for="Id" class="form-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+                <button type="submit" class="btn w-100 mb-5" id="btn">Save</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<a asp-action="GetAll" asp-controller="Decor" class="m-2">Back to List</a>
+
+
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
